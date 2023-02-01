@@ -1,0 +1,10 @@
+{
+  "name": "Chat_Project",
+  "uuid": "9899649b-d81d-419a-bb0d-4c71f87d8b3f",
+  "creator": {
+    "version": "3.7.0"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.5.4"
+  }
+}
