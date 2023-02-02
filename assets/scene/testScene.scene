@@ -1013,6 +1013,10 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "avatarSpDef": {
+      "__uuid__": "54fe9793-dbb2-473c-be9c-03fa99a75baf@f9941",
+      "__expectedType__": "cc.SpriteFrame"
+    },
     "_id": "d98mX1gQhAVaKkY5hWVYM9"
   },
   {

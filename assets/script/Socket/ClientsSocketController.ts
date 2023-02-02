@@ -68,6 +68,7 @@ export class ClientsSocketController extends Component {
 
     public listenerServerChatPrivate(chat: ChatPrivateController){
         this.socket.on(Configs.CREATE_ROOM, (data)=>{
+            console.log(data, "khoa")
             chat.onCreateUserChat(data)
         })
     }

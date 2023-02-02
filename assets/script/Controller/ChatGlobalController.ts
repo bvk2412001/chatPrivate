@@ -37,13 +37,18 @@ export class ChatGlobalController extends Component {
 
     //sendMessage
     onSendMessage() {
-        dataTrasfer.socket_id = ClientsSocketController.ins.socket_id;
-        dataTrasfer.inf_user = FbSdk.ins.dataFb
-        dataTrasfer.data = {
-            message: this.editBox.string
+        if(this.editBox.string.length <= 160){
+            dataTrasfer.socket_id = ClientsSocketController.ins.socket_id;
+            dataTrasfer.inf_user = FbSdk.ins.dataFb
+            dataTrasfer.data = {
+                message: this.editBox.string
+            }
+            ClientsSocketController.ins.socket.emit(Configs.SEND_MESSAGE_GLOBAL, dataTrasfer)
+
+            this.editBox.string = ""
         }
-        console.log(dataTrasfer)
-        ClientsSocketController.ins.socket.emit(Configs.SEND_MESSAGE_GLOBAL, dataTrasfer)
+
+
     }
 
     //addMessageOtherUser

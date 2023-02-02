@@ -1,4 +1,5 @@
 import { _decorator, Component, Node, Prefab, Sprite, Label, instantiate, ScrollView } from 'cc';
+import { FbSdk } from '../FbSdk/FbSdk';
 import { UserChatController } from '../objects/UserChatController';
 import { ClientsSocketController } from '../Socket/ClientsSocketController';
 const { ccclass, property } = _decorator;
@@ -22,10 +23,17 @@ export class ChatPrivateController extends Component {
 
         if (dataFb != null) {
             let check = false;
+            let roomName;
+            if (parseInt(dataFb.inf_user.fbId) < parseInt(FbSdk.ins.dataFb.fbId)) {
+                roomName = dataFb.inf_user.fbId + FbSdk.ins.dataFb.fbId
+            }
+            else {
+                roomName = FbSdk.ins.dataFb.fbId + dataFb.inf_user.fbId
+            }
             for (let i = 0; i < this.listUserNode.length; i++) {
-                console.log(this.listUserNode[i].getComponent(UserChatController).userId, dataFb.socket_id)
-                if (this.listUserNode[i].getComponent(UserChatController).userId == dataFb.socket_id) {
-                    console.log("chuan")
+
+                if (this.listUserNode[i].getComponent(UserChatController).userId == roomName) {
+
                     check = true;
                 }
             }
@@ -34,6 +42,7 @@ export class ChatPrivateController extends Component {
                 userChatNode.getComponent(UserChatController).setUp(dataFb, (dataFb) => {
                     this.onCreateChatPrivate(dataFb)
                 });
+                userChatNode.getComponent(UserChatController).userId = roomName
                 this.scrollView.content.addChild(userChatNode)
                 this.listUserNode.push(userChatNode)
             }
@@ -42,7 +51,6 @@ export class ChatPrivateController extends Component {
 
     start() {
         ClientsSocketController.ins.listenerServerChatPrivate(this);
-        console.log("fdafdsf")
     }
 
     onCreateChatPrivate(dataFb) {
@@ -50,10 +58,19 @@ export class ChatPrivateController extends Component {
     }
 
     onCreateUserChat(data) {
+        console.log(data)
         let check = false
+        let roomName;
+        if (parseInt(data.inf_user.fbId) < parseInt(data.data.toUserId)) {
+            roomName = data.inf_user.fbId + data.data.toUserId
+        }
+        else {
+            roomName = data.data.toUserId + data.inf_user.fbId
+        }
         for (let i = 0; i < this.listUserNode.length; i++) {
-            if (this.listUserNode[i].getComponent(UserChatController).userId == data.socket_id) {
-                console.log("chuan")
+            console.log(this.listUserNode[i].getComponent(UserChatController).userId, roomName)
+            if (this.listUserNode[i].getComponent(UserChatController).userId == roomName) {
+                this.listUserNode[i].getComponent(UserChatController).setMessage(data.data.message)
                 check = true;
             }
         }
@@ -62,6 +79,8 @@ export class ChatPrivateController extends Component {
             userChatNode.getComponent(UserChatController).setUp(data, (dataFb) => {
                 this.onCreateChatPrivate(dataFb)
             });
+            userChatNode.getComponent(UserChatController).userId = roomName
+            userChatNode.getComponent(UserChatController).setMessage(data.data.message)
             this.scrollView.content.addChild(userChatNode)
             this.listUserNode.push(userChatNode)
         }

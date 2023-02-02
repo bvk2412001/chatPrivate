@@ -12,7 +12,12 @@ export class Configs extends Component {
     public static SEND_MESSAGE_GLOBAL = "SEND_MESSAGE_GLOBAL";
     public static SEND_MESSAGE_LOCALE = "SEND_MESSAGE_LOCALE";
     public static SEND_MESSAGE_PRIVATE = "SEND_MESSAGE_PRIVATE";
-    public static CREATE_ROOM = "CREATE_ROOM"
+    public static CREATE_ROOM = "CREATE_ROOM";
+    public static CREATE_ROOM_LOCAL = "CREATE_ROOM_LOCAL";
+
+    //
+    public static PATH_LOCALE = "flag/"
+
 }
 
 

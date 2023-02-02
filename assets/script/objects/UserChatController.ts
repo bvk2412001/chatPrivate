@@ -1,4 +1,5 @@
 import { _decorator, Component, Node, Prefab, SpriteAtlas, Label, Sprite, Input } from 'cc';
+import { FbSdk } from '../FbSdk/FbSdk';
 const { ccclass, property } = _decorator;
 
 @ccclass('UserChatController')
@@ -17,10 +18,12 @@ export class UserChatController extends Component {
 
     userId;
     setUp(dataFb, callback) {
+        FbSdk.ins.setImagePhoto((spriteFrame) => {
+            this.spriteUser.spriteFrame = spriteFrame;
+        }, dataFb)
         this.callback = callback;
         this.dataFb = dataFb
         this.userId = dataFb.socket_id
-        console.log(dataFb)
         this.lblName.string = dataFb.inf_user.sender;
         this.node.on(Input.EventType.TOUCH_START, this.onTouchStart, this)
 
@@ -31,6 +34,10 @@ export class UserChatController extends Component {
     }
     start() {
 
+    }
+
+    setMessage(string) {
+        this.lblMessage.string = string
     }
 
     update(deltaTime: number) {

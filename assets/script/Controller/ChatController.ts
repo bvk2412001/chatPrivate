@@ -1,7 +1,8 @@
-import { _decorator, Component, Node, Input, Sprite, SpriteFrame, Prefab, instantiate } from 'cc';
+import { _decorator, Component, Node, Input, Sprite, SpriteFrame, Prefab, instantiate, Label } from 'cc';
 import { FbSdk } from '../FbSdk/FbSdk';
 import { ClientsSocketController } from '../Socket/ClientsSocketController';
 import { Configs } from '../Utils/Configs';
+import { ResourceUtils } from '../Utils/ResourceUtils';
 import { ChatGlobalController } from './ChatGlobalController';
 import { ChatLocalController } from './ChatLocalController';
 import { ChatPrivateController } from './ChatPrivateController';
@@ -34,13 +35,23 @@ export class ChatController extends Component {
     @property(Prefab)
     chatPrivateUserToUser: Prefab
 
+    @property(Label)
+    lblLocaleName: Label
+
+    @property(Sprite)
+    spriteLocale:Sprite
+
     private chatGlobalNode: Node
     private chatLocalNode: Node
     private chatPrivate: Node
     listChatUserToUser: Node[] = [];
     start() {
+        this.lblLocaleName.string = FbSdk.ins.dataFb.locale;
         ClientsSocketController.ins.listenerChatController(this);
         this.init();
+        ResourceUtils.loadSprite(Configs.PATH_LOCALE + FbSdk.ins.dataFb.locale, (spriteFrame)=>{
+            this.spriteLocale.spriteFrame = spriteFrame
+        })
     }
 
     update(deltaTime: number) {
@@ -61,6 +72,7 @@ export class ChatController extends Component {
             this.onBtnChatPrivate(dataUser);
         })
         this.node.addChild(this.chatLocalNode);
+
         setTimeout(() => {
             this.chatLocalNode.active = false
         }, 100)
@@ -183,7 +195,6 @@ export class ChatController extends Component {
 
     onBackToGame(event: TouchEvent, arg) {
         let status = Number(arg);
-        console.log(status);
         if (status == 0) {
             this.node.active = false
         }
@@ -213,7 +224,7 @@ export class ChatController extends Component {
                 roomName = FbSdk.ins.dataFb.fbId + dataFb.inf_user.fbId
             }
             chatPre.getComponent(ChatPrivateUserToUser).roomName = roomName
-            console.log(chatPre.getComponent(ChatPrivateUserToUser).roomName)
+
             this.node.parent.addChild(chatPre)
             this.node.active = false
 
@@ -224,7 +235,6 @@ export class ChatController extends Component {
     createNodeChatPrivate1(dataFb) {
         let check = false;
         for (let i = 0; i < this.listChatUserToUser.length; i++) {
-            console.log(this.listChatUserToUser[i].getComponent(ChatPrivateUserToUser).roomName + " " + dataFb.data.roomName)
             if (this.listChatUserToUser[i].getComponent(ChatPrivateUserToUser).roomName == dataFb.data.roomName) {
                 check = true;
                 if (FbSdk.ins.dataFb.fbId == dataFb.inf_user.fbId) {

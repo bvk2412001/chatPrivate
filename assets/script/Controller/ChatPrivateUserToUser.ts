@@ -51,7 +51,6 @@ export class ChatPrivateUserToUser extends Component {
             toUserId: this.dataFb.inf_user.fbId,
             message: this.editBox.string
         }
-        console.log(dataTrasfer)
         ClientsSocketController.ins.socket.emit(Configs.SEND_MESSAGE_PRIVATE, dataTrasfer);
     }
 

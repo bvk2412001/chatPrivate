@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, ScrollView, EditBox, Prefab, instantiate } from 'cc';
+import { _decorator, Component, Node, ScrollView, EditBox, Prefab, instantiate, Label, Sprite } from 'cc';
 import { FbSdk } from '../FbSdk/FbSdk';
 import dataTrasfer from '../objects/dataTransfer';
 import { Message } from '../objects/Message';
@@ -25,6 +25,9 @@ export class ChatLocalController extends Component {
 
     start() {
         ClientsSocketController.ins.listenerServerChatLocale(this);
+        dataTrasfer.inf_user = FbSdk.ins.dataFb
+        ClientsSocketController.ins.socket.emit(Configs.CREATE_ROOM_LOCAL, dataTrasfer)
+
     }
 
     update(deltaTime: number) {
@@ -43,7 +46,6 @@ export class ChatLocalController extends Component {
         dataTrasfer.data= {
             message: this.editBox.string
         }
-        console.log(dataTrasfer)
         ClientsSocketController.ins.socket.emit(Configs.SEND_MESSAGE_LOCALE, dataTrasfer);
     }
 
