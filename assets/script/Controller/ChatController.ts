@@ -39,7 +39,7 @@ export class ChatController extends Component {
     lblLocaleName: Label
 
     @property(Sprite)
-    spriteLocale:Sprite
+    spriteLocale: Sprite
 
     private chatGlobalNode: Node
     private chatLocalNode: Node
@@ -49,7 +49,7 @@ export class ChatController extends Component {
         this.lblLocaleName.string = FbSdk.ins.dataFb.locale;
         ClientsSocketController.ins.listenerChatController(this);
         this.init();
-        ResourceUtils.loadSprite(Configs.PATH_LOCALE + FbSdk.ins.dataFb.locale, (spriteFrame)=>{
+        ResourceUtils.loadSprite(Configs.PATH_LOCALE + FbSdk.ins.dataFb.locale, (spriteFrame) => {
             this.spriteLocale.spriteFrame = spriteFrame
         })
     }
@@ -216,6 +216,7 @@ export class ChatController extends Component {
             chatPre.getComponent(ChatPrivateUserToUser).setUp(dataFb, () => {
                 this.onTransferChat();
             })
+            chatPre.getComponent(ChatPrivateUserToUser).lbluserName.string = dataFb.inf_user.sender
             let roomName;
             if (parseInt(dataFb.inf_user.fbId) < parseInt(FbSdk.ins.dataFb.fbId)) {
                 roomName = dataFb.inf_user.fbId + FbSdk.ins.dataFb.fbId
@@ -237,24 +238,38 @@ export class ChatController extends Component {
         for (let i = 0; i < this.listChatUserToUser.length; i++) {
             if (this.listChatUserToUser[i].getComponent(ChatPrivateUserToUser).roomName == dataFb.data.roomName) {
                 check = true;
+                let chatPri = this.listChatUserToUser[i].getComponent(ChatPrivateUserToUser);
+                if(chatPri.idUserOldChat == null){
+                    chatPri.idUserOldChat = dataFb.inf_user.fbId;
+                }
+                else{
+                    if(chatPri.idUserOldChat == dataFb.inf_user.fbId){
+                        chatPri.isSameUser = true;
+                    }
+                    else{
+                        chatPri.isSameUser = false;
+                    }
+                    chatPri.idUserOldChat = dataFb.inf_user.fbId;
+                }
                 if (FbSdk.ins.dataFb.fbId == dataFb.inf_user.fbId) {
-                    this.listChatUserToUser[i].getComponent(ChatPrivateUserToUser).addMessageMyUser(dataFb)
+                    chatPri.addMessageMyUser(dataFb)
                 }
                 else {
-                    this.listChatUserToUser[i].getComponent(ChatPrivateUserToUser).addMessageOtherUser(dataFb);
+                    chatPri.addMessageOtherUser(dataFb, chatPri.isSameUser);
                 }
             }
         }
         if (check == false) {
             let chatPre = instantiate(this.chatPrivateUserToUser)
-
-            chatPre.getComponent(ChatPrivateUserToUser).setUp(dataFb, () => {
+            let chatPri =  chatPre.getComponent(ChatPrivateUserToUser);
+            chatPri.setUp(dataFb, () => {
                 this.onTransferChat();
             })
-            chatPre.getComponent(ChatPrivateUserToUser).roomName = dataFb.data.roomName
-
-
-            chatPre.getComponent(ChatPrivateUserToUser).addMessageOtherUser(dataFb)
+            chatPri.roomName = dataFb.data.roomName
+            chatPri.lbluserName.string = dataFb.inf_user.sender
+            chatPri.isSameUser = false
+            chatPri.idUserOldChat = dataFb.inf_user.fbId
+            chatPri.addMessageOtherUser(dataFb, chatPre.getComponent(ChatPrivateUserToUser).isSameUser)
             this.node.parent.addChild(chatPre)
             this.listChatUserToUser.push(chatPre)
             chatPre.active = false

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Sprite, Label } from 'cc';
+import { _decorator, Component, Node, Sprite, Label, UITransform, Vec3 } from 'cc';
 import dataFb from '../FbSdk/dataFb';
 import { FbSdk } from '../FbSdk/FbSdk';
 import { ClientsSocketController } from '../Socket/ClientsSocketController';
@@ -22,33 +22,44 @@ export class Message extends Component {
     @property(Sprite)
     locale: Sprite
 
+    @property(Node)
+    nodeInf: Node;
+
+
     private callback
 
     private otherData
+
     setUpMyUser(dataTransfer) {
-        FbSdk.ins.setImagePhoto((spriframe)=>{
-            this.avatarSprite.spriteFrame = spriframe
-        }, dataTransfer)
         let newString = Utils.cutString(dataTransfer.data.message)
-        console.log(newString);
         this.lblMessage.string = newString;
     }
 
-    setUpOtherUser(dataTransfer, callback) {
+    setUpOtherUser(dataTransfer, callback, isSameUser) {
         this.otherData = dataTransfer
-        FbSdk.ins.setImagePhoto((spriframe)=>{
-            this.avatarSprite.spriteFrame = spriframe
-        }, dataTransfer)
 
-        ResourceUtils.loadSprite(Configs.PATH_LOCALE + FbSdk.ins.dataFb.locale, (spriteFrame)=>{
-            this.locale.spriteFrame = spriteFrame
-        })
-
-        this.lblName.string = dataTransfer.inf_user.sender
         let newString = Utils.cutString(dataTransfer.data.message)
-        this.lblMessage.string = newString;
-
+        this.lblMessage.string = newString
         this.callback = callback;
+
+        if (isSameUser == true) {            
+            this.avatarSprite.destroy();
+            this.nodeInf.destroy();
+        }
+        else {
+            FbSdk.ins.setImagePhoto((spriframe) => {
+                this.avatarSprite.spriteFrame = spriframe
+            }, dataTransfer)
+
+            ResourceUtils.loadSprite(Configs.PATH_LOCALE + FbSdk.ins.dataFb.locale, (spriteFrame) => {
+                this.locale.spriteFrame = spriteFrame
+            })
+            //this.node.getComponent(UITransform).setContentSize(720, this.nodeMessage.getComponent(UITransform).contentSize.height + this.nodeInf.getComponent(UITransform).contentSize.height)
+            this.lblName.string = dataTransfer.inf_user.sender
+        }
+
+
+
     }
     start() {
 

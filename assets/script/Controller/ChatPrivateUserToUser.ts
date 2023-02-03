@@ -29,6 +29,9 @@ export class ChatPrivateUserToUser extends Component {
     roomName;
     private dataFb
     private callback
+        
+    isSameUser: boolean = false;
+    idUserOldChat
     start() {
         ClientsSocketController.ins.listenerServerChatUserToUser(this)
     }
@@ -52,6 +55,8 @@ export class ChatPrivateUserToUser extends Component {
             message: this.editBox.string
         }
         ClientsSocketController.ins.socket.emit(Configs.SEND_MESSAGE_PRIVATE, dataTrasfer);
+
+    this.editBox.string = ""
     }
 
     onBackChat(){
@@ -59,9 +64,9 @@ export class ChatPrivateUserToUser extends Component {
         this.node.active = false;
     }
 
-    addMessageOtherUser(dataTransfer) {
+    addMessageOtherUser(dataTransfer, isSameUser) {
         let mesageOtherUser = instantiate(this.messageOtherUserPre)
-        mesageOtherUser.getComponent(Message).setUpOtherUser(dataTransfer, null)
+        mesageOtherUser.getComponent(Message).setUpOtherUser(dataTransfer, null, isSameUser)
         this.scrollView.content.addChild(mesageOtherUser)
     }
 

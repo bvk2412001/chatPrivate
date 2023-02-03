@@ -22,7 +22,9 @@ export class ChatLocalController extends Component {
     messageOtherUserPre: Prefab
 
     private callback: CallableFunction
-
+    
+    isSameUser: boolean = false;
+    idUserOldChat
     start() {
         ClientsSocketController.ins.listenerServerChatLocale(this);
         dataTrasfer.inf_user = FbSdk.ins.dataFb
@@ -47,11 +49,12 @@ export class ChatLocalController extends Component {
             message: this.editBox.string
         }
         ClientsSocketController.ins.socket.emit(Configs.SEND_MESSAGE_LOCALE, dataTrasfer);
+        this.editBox.string = ""
     }
 
     addMessageOtherUser(dataTransfer) {
         let mesageOtherUser = instantiate(this.messageOtherUserPre)
-        mesageOtherUser.getComponent(Message).setUpOtherUser(dataTransfer, this.callback)
+        mesageOtherUser.getComponent(Message).setUpOtherUser(dataTransfer, this.callback, this.isSameUser)
         this.scrollView.content.addChild(mesageOtherUser)
     }
 

@@ -58,7 +58,6 @@ export class ChatPrivateController extends Component {
     }
 
     onCreateUserChat(data) {
-        console.log(data)
         let check = false
         let roomName;
         if (parseInt(data.inf_user.fbId) < parseInt(data.data.toUserId)) {
@@ -80,6 +79,7 @@ export class ChatPrivateController extends Component {
                 this.onCreateChatPrivate(dataFb)
             });
             userChatNode.getComponent(UserChatController).userId = roomName
+            
             userChatNode.getComponent(UserChatController).setMessage(data.data.message)
             this.scrollView.content.addChild(userChatNode)
             this.listUserNode.push(userChatNode)

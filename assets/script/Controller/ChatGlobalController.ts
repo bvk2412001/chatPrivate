@@ -22,6 +22,9 @@ export class ChatGlobalController extends Component {
 
     private callback;
 
+    isSameUser: boolean = false;
+    idUserOldChat
+
     start() {
         ClientsSocketController.ins.listenerServerChatGlobal(this);
     }
@@ -54,7 +57,7 @@ export class ChatGlobalController extends Component {
     //addMessageOtherUser
     addMessageOtherUser(dataTransfer) {
         let mesageOtherUser = instantiate(this.mesageOtherUser)
-        mesageOtherUser.getComponent(Message).setUpOtherUser(dataTransfer, this.callback)
+        mesageOtherUser.getComponent(Message).setUpOtherUser(dataTransfer, this.callback, this.isSameUser)
         this.scrollView.content.addChild(mesageOtherUser)
     }
 

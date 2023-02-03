@@ -37,6 +37,9 @@ export class UserChatController extends Component {
     }
 
     setMessage(string) {
+        if(string.length > 30){
+            string = string.substr(0, 30) + "..."
+        }
         this.lblMessage.string = string
     }
 

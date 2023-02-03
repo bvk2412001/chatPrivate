@@ -39,7 +39,19 @@ export class ClientsSocketController extends Component {
     // nhận thông báo từ server của chatGlobal
     public listenerServerChatGlobal(chatGlobal: ChatGlobalController) {
         this.socket.on(Configs.SEND_MESSAGE_GLOBAL, (data) => {
-            console.log(data)
+            if(chatGlobal.idUserOldChat == null){
+                chatGlobal.idUserOldChat = data.inf_user.fbId;
+            }
+            else{
+                if(chatGlobal.idUserOldChat == data.inf_user.fbId){
+                    chatGlobal.isSameUser = true;
+                }
+                else{
+                    chatGlobal.isSameUser = false;
+                }
+                chatGlobal.idUserOldChat = data.inf_user.fbId;
+            }
+           
             if (FbSdk.ins.dataFb.fbId == data.inf_user.fbId) {
                 chatGlobal.addMessageMyUser(data)
             }
@@ -52,7 +64,18 @@ export class ClientsSocketController extends Component {
 
     public listenerServerChatLocale(chatLocale: ChatLocalController) {
         this.socket.on(Configs.SEND_MESSAGE_LOCALE, (data) => {
-            console.log("khoa")
+            if(chatLocale.idUserOldChat == null){
+                chatLocale.idUserOldChat = data.inf_user.fbId;
+            }
+            else{
+                if(chatLocale.idUserOldChat == data.inf_user.fbId){
+                    chatLocale.isSameUser = true;
+                }
+                else{
+                    chatLocale.isSameUser = false;
+                }
+                chatLocale.idUserOldChat = data.inf_user.fbId;
+            }
             if (FbSdk.ins.dataFb.fbId == data.inf_user.fbId) {
                 chatLocale.addMessageMyUser(data)
             }
@@ -68,14 +91,12 @@ export class ClientsSocketController extends Component {
 
     public listenerServerChatPrivate(chat: ChatPrivateController){
         this.socket.on(Configs.CREATE_ROOM, (data)=>{
-            console.log(data, "khoa")
             chat.onCreateUserChat(data)
         })
     }
 
     public listenerChatController(chat: ChatController){
         this.socket.on(Configs.SEND_MESSAGE_PRIVATE, (data) => {
-            console.log("khoa")
             chat.createNodeChatPrivate1(data)
         })
     }
