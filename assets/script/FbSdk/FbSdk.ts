@@ -13,7 +13,7 @@ export class FbSdk extends Component {
         fbId: "123",
         sender: "buivankhoa",
         locale: "bd",
-        photoURL: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1576049096168523&gaming_photo_type=unified_picture&ext=1678009729&hash=AeQ8QeVmF8XPM2krb5s",
+        photoURL: "",
     }
 
     start() {
@@ -30,7 +30,6 @@ export class FbSdk extends Component {
             return;
         }
 
-        
         this.dataFb.fbId = this.FBInstant.player.getID();
         this.dataFb.sender = this.FBInstant.player.getName();
         this.dataFb.photoURL = this.FBInstant.player.getPhoto();
@@ -42,9 +41,9 @@ export class FbSdk extends Component {
 
 
     setImagePhoto(callback, data) {
-        console.log(data)
+
         if (data.inf_user.photoURL != "") {
-            let remoteUrl = "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1576049096168523&gaming_photo_type=unified_picture&ext=1678009729&hash=AeQ8QeVmF8XPM2krb5s";
+            let remoteUrl = data.inf_user.photoURL;
             assetManager.loadRemote<ImageAsset>(remoteUrl, function (err, imageAsset) {
                 
                 if(err){
